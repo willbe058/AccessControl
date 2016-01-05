@@ -1,4 +1,4 @@
-package com.example.pengfeixie.dac;
+package com.example.pengfeixie.dac.ui.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.pengfeixie.dac.R;
 import com.example.pengfeixie.dac.base.BaseAppBarActivity;
 import com.example.pengfeixie.dac.dao.RealmHelper;
 import com.example.pengfeixie.dac.event.BusProvider;

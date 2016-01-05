@@ -128,4 +128,10 @@ public class RealmHelper {
         return realm.where(CentralizedSubject.class).findAll();
     }
 
+    public List<CentralizedObject> getOwnedObjects(String subjectName) {
+        return realm.where(CentralizedObject.class).equalTo("creator.name", subjectName).findAll();
+    }
+
+    
+
 }

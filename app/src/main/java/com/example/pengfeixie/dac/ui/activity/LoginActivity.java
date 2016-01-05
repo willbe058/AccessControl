@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.pengfeixie.dac.MainActivity;
 import com.example.pengfeixie.dac.R;
 import com.example.pengfeixie.dac.base.BaseActivity;
 import com.example.pengfeixie.dac.dao.RealmHelper;
@@ -104,12 +103,14 @@ public class LoginActivity extends BaseActivity {
                 if (userName.getText().toString().equals("root")) {
                     PreferenceUtil.setPreString("user", "root");
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 } else {
                     if (RealmHelper.getInstance().getUser(userName.getText().toString()) != null) {
                         if (RealmHelper.getInstance().getUser(userName.getText().toString()).getPasswd()
                                 .equals(passwd.getText().toString())) {
                             PreferenceUtil.setPreString("user", userName.getText().toString());
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
                         } else {
                             Toast.makeText(AppData.getContext(), "密码错误!", Toast.LENGTH_LONG).show();
                         }
@@ -118,7 +119,6 @@ public class LoginActivity extends BaseActivity {
                     }
 
                 }
-
             }
         });
     }
