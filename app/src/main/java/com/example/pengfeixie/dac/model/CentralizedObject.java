@@ -13,7 +13,7 @@ public class CentralizedObject extends RealmObject {
 
     private String info;
 
-    private Grantor creator;
+    private CentralizedSubject creator;
 
     public String getName() {
         return name;
@@ -31,11 +31,11 @@ public class CentralizedObject extends RealmObject {
         this.info = info;
     }
 
-    public Grantor getCreator() {
+    public CentralizedSubject getCreator() {
         return creator;
     }
 
-    public void setCreator(Grantor creator) {
+    public void setCreator(CentralizedSubject creator) {
         this.creator = creator;
     }
 }
