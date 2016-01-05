@@ -68,7 +68,7 @@
             android:id="@+id/subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_label="用户管理"
+            fab:fab_label="添加用户"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton

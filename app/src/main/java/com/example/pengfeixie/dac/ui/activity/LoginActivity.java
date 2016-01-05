@@ -54,6 +54,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void setupActionBar() {
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class SubjectsAdapter extends BaseAdapter<SubjectHolder, CentralizedSubje
                 }
             }
         });
-        return null;
+        return new SubjectHolder(root);
     }
 
     @Override

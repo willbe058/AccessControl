@@ -3,39 +3,59 @@ package com.example.pengfeixie.dac;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.dd.realmbrowser.FuckActivity;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.pengfeixie.dac.base.BaseAppBarActivity;
 import com.example.pengfeixie.dac.dao.RealmHelper;
+import com.example.pengfeixie.dac.event.BusProvider;
+import com.example.pengfeixie.dac.event.CreateSubjectEvent;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
 import com.example.pengfeixie.dac.ui.fragment.SubjectFragment;
 import com.example.pengfeixie.dac.utils.PreferenceUtil;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.xpf.me.architect.app.AppData;
 
 import java.io.File;
 import java.io.IOException;
 
 import butterknife.Bind;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MainActivity extends BaseAppBarActivity {
 
     @Bind(R.id.subjectName)
     TextView currentUser;
 
+    @Bind(R.id.subject)
+    FloatingActionButton addSubject;
+
+    @Bind(R.id.object)
+    FloatingActionButton addObject;
+
+    @Bind(R.id.power)
+    FloatingActionButton addPower;
+
+    @Bind(R.id.menu)
+    FloatingActionMenu menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
     }
 
     @Override
@@ -57,6 +77,48 @@ public class MainActivity extends BaseAppBarActivity {
             currentUser.setText(PreferenceUtil.getPreString("user", ""));
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new SubjectFragment()).commit();
+        addSubject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!PreferenceUtil.getPreString("user", "").equals("root")) {
+                    Toast.makeText(AppData.getContext(), "只有管理员用户才能创建主体!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                menu.close(true);
+                new MaterialDialog.Builder(MainActivity.this)
+                        .customView(R.layout.dialog_add_subject, false)
+                        .title("创建新的用户(主体)")
+                        .positiveText("确定")
+                        .negativeText("取消")
+                        .autoDismiss(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                String name = ((EditText) dialog.getCustomView().findViewById(R.id.create_sub_name)).getText().toString();
+                                String passwd = ((EditText) dialog.getCustomView().findViewById(R.id.create_sub_pass)).getText().toString();
+                                if (TextUtils.isEmpty(name)) {
+                                    Toast.makeText(AppData.getContext(), "请填写用户名", Toast.LENGTH_LONG).show();
+                                    return;
+                                } else if (TextUtils.isEmpty(passwd)) {
+                                    Toast.makeText(AppData.getContext(), "请填写密码", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                CentralizedSubject subject = new CentralizedSubject();
+                                subject.setName(name);
+                                subject.setPasswd(passwd);
+                                subject.setInfo("test");
+                                RealmHelper.getInstance().addSubject(subject);
+                                BusProvider.getInstance().post(new CreateSubjectEvent());
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                dialog.dismiss();
+                            }
+                        }).build().show();
+            }
+        });
     }
 
     public void exportDatabase() {

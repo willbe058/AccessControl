@@ -15,10 +15,15 @@ import android.widget.Toast;
 import com.example.pengfeixie.dac.R;
 import com.example.pengfeixie.dac.base.BaseRecyclerViewFragment;
 import com.example.pengfeixie.dac.base.BaseRecyclerViewMvpFragment;
+import com.example.pengfeixie.dac.event.BusProvider;
+import com.example.pengfeixie.dac.event.CreateSubjectEvent;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
 import com.example.pengfeixie.dac.presenter.SubjectPresenter;
 import com.example.pengfeixie.dac.ui.adapter.SubjectsAdapter;
 import com.example.pengfeixie.dac.view.SubjectView;
+import com.github.clans.fab.FloatingActionButton;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -41,13 +46,20 @@ public class SubjectFragment extends BaseRecyclerViewMvpFragment<SubjectView, Su
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BusProvider.getInstance().register(this);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
     }
 
+    @Subscribe
+    public void onCreateSubject(CreateSubjectEvent event) {
+        adapter.clear();
+        presenter.loadData();
+    }
 
     @Override
     protected void setupViews(View contentView) {
