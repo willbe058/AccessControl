@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">DAC</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="type">
+        <item>集中式授权</item>
+        <item>分散式授权</item>
+    </string-array>
 </resources>

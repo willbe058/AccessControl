@@ -120,6 +120,12 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
+    public CentralizedSubject getUser(String name) {
+        return realm.where(CentralizedSubject.class).equalTo("name", name).findFirst();
+    }
 
+    public List<CentralizedSubject> getAllUser() {
+        return realm.where(CentralizedSubject.class).findAll();
+    }
 
 }

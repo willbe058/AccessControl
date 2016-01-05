@@ -26,7 +26,5 @@ public class DACApplication extends CommonApplication {
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
-        RealmBrowser.getInstance().addRealmModel(CentralizedSubject.class, CentralizedObject.class,
-                Right.class, Power.class, CentraRootSubject.class);
     }
 }
