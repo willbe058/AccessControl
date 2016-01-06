@@ -12,11 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.pengfeixie.dac.R;
 import com.example.pengfeixie.dac.base.BaseRecyclerViewMvpFragment;
 import com.example.pengfeixie.dac.dao.RealmHelper;
 import com.example.pengfeixie.dac.event.BusProvider;
 import com.example.pengfeixie.dac.event.CreateObjectEvent;
+import com.example.pengfeixie.dac.event.DeleteObjectEvent;
 import com.example.pengfeixie.dac.model.CentralizedObject;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
 import com.example.pengfeixie.dac.model.Power;
@@ -72,6 +74,12 @@ public class ObjectFragment extends BaseRecyclerViewMvpFragment<ObjectView, Obje
         presenter.loadData();
     }
 
+    @Subscribe
+    public void onDeleteObjectEvent(DeleteObjectEvent event) {
+        adapter.clear();
+        presenter.loadData();
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -85,6 +93,62 @@ public class ObjectFragment extends BaseRecyclerViewMvpFragment<ObjectView, Obje
         emptyImage = ((ImageView) contentView.findViewById(R.id.empty_image));
 
         adapter = new SelfObjectAdapter(getActivity());
+        adapter.setLongClickListener(new SelfObjectAdapter.OnObjectLongClickListener() {
+            @Override
+            public void longClick(View view, final Power power) {
+                new MaterialDialog.Builder(getActivity())
+                        .title("操作客体")
+                        .autoDismiss(false)
+                        .items(R.array.powers)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                                switch (which) {
+                                    case 0:
+                                        if (power.getRights().get(1).isHas()) {
+                                            Toast.makeText(dialog.getContext(), "读成功", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(dialog.getContext(), "对不起,您没有读的权限", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case 1:
+                                        if (power.getRights().get(2).isHas()) {
+                                            Toast.makeText(dialog.getContext(), "写成功", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(dialog.getContext(), "对不起,您没有写的权限", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case 2:
+                                        if (power.getRights().get(4).isHas()) {
+                                            Toast.makeText(dialog.getContext(), "添加成功", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(dialog.getContext(), "对不起,您没有添加的权限", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case 3:
+                                        if (power.getRights().get(3).isHas()) {
+                                            String objName = power.getoName();
+                                            RealmHelper.getInstance().deletePower(power.getId());
+                                            RealmHelper.getInstance().deleteObject(objName);
+                                            BusProvider.getInstance().post(new DeleteObjectEvent());
+                                            Toast.makeText(dialog.getContext(), "删除成功", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(dialog.getContext(), "对不起,您没有删除的权限", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case 4:
+                                        if (power.getRights().get(5).isHas()) {
+                                            Toast.makeText(dialog.getContext(), "执行成功", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(dialog.getContext(), "对不起,您没有执行的权限", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                }
+                            }
+                        })
+                        .build().show();
+            }
+        });
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);

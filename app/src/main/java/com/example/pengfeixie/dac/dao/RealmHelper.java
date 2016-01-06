@@ -168,5 +168,16 @@ public class RealmHelper {
         return realm.where(CentralizedObject.class).equalTo("name", objName).findFirst();
     }
 
+    public void deletePower(String id) {
+        realm.beginTransaction();
+        realm.where(Power.class).equalTo("id", id).findAll().remove(0);
+        realm.commitTransaction();
+    }
+
+    public void deleteObject(String name) {
+        realm.beginTransaction();
+        realm.where(CentralizedObject.class).equalTo("name", name).findAll().remove(0);
+        realm.commitTransaction();
+    }
 
 }

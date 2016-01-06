@@ -19,6 +19,12 @@ public class SelfObjectAdapter extends BaseAdapter<ObjectHolder, Power> {
 
     private Context mContext;
 
+    private OnObjectLongClickListener longClickListener;
+
+    public void setLongClickListener(OnObjectLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
     public SelfObjectAdapter(Context context) {
         super(context);
         this.mContext = context;
@@ -26,7 +32,16 @@ public class SelfObjectAdapter extends BaseAdapter<ObjectHolder, Power> {
 
     @Override
     public ObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View root = LayoutInflater.from(mContext).inflate(R.layout.item_object, parent, false);
+        final View root = LayoutInflater.from(mContext).inflate(R.layout.item_object, parent, false);
+        root.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (longClickListener != null) {
+                    longClickListener.longClick(view, ((Power) root.getTag()));
+                }
+                return true;
+            }
+        });
         return new ObjectHolder(root);
     }
 
@@ -38,5 +53,9 @@ public class SelfObjectAdapter extends BaseAdapter<ObjectHolder, Power> {
         holder.name.setText(power.getoName());
         holder.info.setText(RealmHelper.getInstance().getObject(power.getoName()).getInfo());
         holder.creator.setText("创建者:" + power.getGrantor().getName());
+    }
+
+    public interface OnObjectLongClickListener {
+        void longClick(View view, Power power);
     }
 }
