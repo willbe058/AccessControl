@@ -22,6 +22,7 @@ import com.example.pengfeixie.dac.ui.fragment.SubjectFragment;
 import com.example.pengfeixie.dac.utils.PreferenceUtil;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.xpf.me.architect.activity.MvpActivity;
 import com.xpf.me.architect.app.AppData;
 
 import java.io.File;
@@ -73,9 +74,9 @@ public class MainActivity extends BaseAppBarActivity {
     protected void setupViews() {
         super.setupViews();
         if (PreferenceUtil.getPreString("user", "").equals("root")) {
-            currentUser.setText("超级管理员");
+            currentUser.setText("当前用户: 超级管理员");
         } else {
-            currentUser.setText(PreferenceUtil.getPreString("user", ""));
+            currentUser.setText("当前用户: " + PreferenceUtil.getPreString("user", ""));
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new SubjectFragment()).commit();
         addSubject.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +98,7 @@ public class MainActivity extends BaseAppBarActivity {
                             public void onPositive(MaterialDialog dialog) {
                                 String name = ((EditText) dialog.getCustomView().findViewById(R.id.create_sub_name)).getText().toString();
                                 String passwd = ((EditText) dialog.getCustomView().findViewById(R.id.create_sub_pass)).getText().toString();
+                                String info = ((EditText) dialog.getCustomView().findViewById(R.id.create_info_pass)).getText().toString();
                                 if (TextUtils.isEmpty(name)) {
                                     Toast.makeText(AppData.getContext(), "请填写用户名", Toast.LENGTH_LONG).show();
                                     return;
@@ -107,7 +109,11 @@ public class MainActivity extends BaseAppBarActivity {
                                 CentralizedSubject subject = new CentralizedSubject();
                                 subject.setName(name);
                                 subject.setPasswd(passwd);
-                                subject.setInfo("test");
+                                if (TextUtils.isEmpty(info)) {
+                                    subject.setInfo("默认信息");
+                                } else {
+                                    subject.setInfo(info);
+                                }
                                 RealmHelper.getInstance().addSubject(subject);
                                 BusProvider.getInstance().post(new CreateSubjectEvent());
                                 dialog.dismiss();
@@ -118,6 +124,13 @@ public class MainActivity extends BaseAppBarActivity {
                                 dialog.dismiss();
                             }
                         }).build().show();
+            }
+        });
+
+        addObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SelfObjectActivity.class));
             }
         });
     }

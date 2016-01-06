@@ -10,17 +10,20 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by pengfeixie on 16/1/5.
+ * Created by pengfeixie on 16/1/6.
  */
-public class SubjectHolder extends RecyclerView.ViewHolder {
+public class ObjectHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.sub_name)
+    @Bind(R.id.obj_name)
     public TextView name;
 
     @Bind(R.id.info)
     public TextView info;
 
-    public SubjectHolder(View itemView) {
+    @Bind(R.id.creator)
+    public TextView creator;
+
+    public ObjectHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

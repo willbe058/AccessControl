@@ -49,6 +49,7 @@ public class SubjectsAdapter extends BaseAdapter<SubjectHolder, CentralizedSubje
         holder.itemView.setTag(subject);
 
         holder.name.setText(subject.getName());
+        holder.info.setText(subject.getInfo());
     }
 
     public interface OnSubjectClickListener {

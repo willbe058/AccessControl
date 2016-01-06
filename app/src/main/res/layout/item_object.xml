@@ -2,11 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/selectableItemBackground">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/sub_name"
+        android:id="@+id/obj_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -21,7 +20,16 @@
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sub_name"
+        android:layout_below="@id/obj_name"
         android:layout_marginLeft="16dp"
         tools:text="asjdalskdjalsjdlajsdlkajsdljasd" />
+
+    <TextView
+        android:id="@+id/creator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/obj_name"
+        android:layout_marginRight="16dp"
+        tools:text="创建者:asd" />
 </RelativeLayout>

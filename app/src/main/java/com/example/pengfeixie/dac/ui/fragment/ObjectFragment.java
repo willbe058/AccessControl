@@ -1,9 +1,7 @@
 package com.example.pengfeixie.dac.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,28 +12,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pengfeixie.dac.R;
-import com.example.pengfeixie.dac.base.BaseRecyclerViewFragment;
 import com.example.pengfeixie.dac.base.BaseRecyclerViewMvpFragment;
+import com.example.pengfeixie.dac.dao.RealmHelper;
 import com.example.pengfeixie.dac.event.BusProvider;
-import com.example.pengfeixie.dac.event.CreateSubjectEvent;
+import com.example.pengfeixie.dac.model.CentralizedObject;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
-import com.example.pengfeixie.dac.presenter.SubjectPresenter;
-import com.example.pengfeixie.dac.ui.activity.OwnedObjectActivity;
-import com.example.pengfeixie.dac.ui.adapter.SubjectsAdapter;
-import com.example.pengfeixie.dac.view.SubjectView;
-import com.github.clans.fab.FloatingActionButton;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import com.example.pengfeixie.dac.model.Power;
+import com.example.pengfeixie.dac.presenter.ObjectPresenter;
+import com.example.pengfeixie.dac.ui.adapter.SelfObjectAdapter;
+import com.example.pengfeixie.dac.utils.PreferenceUtil;
+import com.example.pengfeixie.dac.view.ObjectView;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 /**
- * Created by pengfeixie on 16/1/5.
+ * Created by pengfeixie on 16/1/6.
  */
-public class SubjectFragment extends BaseRecyclerViewMvpFragment<SubjectView, SubjectPresenter, RecyclerView> implements SubjectView {
-
+public class ObjectFragment extends BaseRecyclerViewMvpFragment<ObjectView, ObjectPresenter, RecyclerView> implements ObjectView {
 
     private TextView emptyText;
 
@@ -43,12 +36,25 @@ public class SubjectFragment extends BaseRecyclerViewMvpFragment<SubjectView, Su
 
     private RelativeLayout emptyView;
 
-    private SubjectsAdapter adapter;
+    private SelfObjectAdapter adapter;
+
+    private CentralizedSubject subject;
+
+    public static ObjectFragment getInstance(String name) {
+        ObjectFragment fragment = new ObjectFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BusProvider.getInstance().register(this);
+        if (getArguments() != null) {
+            this.subject = RealmHelper.getInstance().getUser(getArguments().getString("name"));
+        }
     }
 
     @Override
@@ -57,26 +63,13 @@ public class SubjectFragment extends BaseRecyclerViewMvpFragment<SubjectView, Su
         BusProvider.getInstance().unregister(this);
     }
 
-    @Subscribe
-    public void onCreateSubject(CreateSubjectEvent event) {
-        adapter.clear();
-        presenter.loadData();
-    }
-
     @Override
     protected void setupViews(View contentView) {
         emptyView = ((RelativeLayout) contentView.findViewById(R.id.empty_view));
         emptyText = ((TextView) contentView.findViewById(R.id.empty_text));
         emptyImage = ((ImageView) contentView.findViewById(R.id.empty_image));
 
-        adapter = new SubjectsAdapter(getActivity());
-        adapter.setOnSubjectClickListener(new SubjectsAdapter.OnSubjectClickListener() {
-            @Override
-            public void clickSubject(View view, CentralizedSubject subject) {
-                OwnedObjectActivity.getInstance(getActivity(), subject.getName());
-
-            }
-        });
+        adapter = new SelfObjectAdapter(getActivity());
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 1, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -86,24 +79,18 @@ public class SubjectFragment extends BaseRecyclerViewMvpFragment<SubjectView, Su
 
     @NonNull
     @Override
-    public SubjectPresenter createPresenter() {
-        return new SubjectPresenter();
+    public ObjectPresenter createPresenter() {
+        return new ObjectPresenter(PreferenceUtil.getPreString("user", ""));
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        presenter.loadData();
-    }
-
-    @Override
-    public void setData(List<CentralizedSubject> subjects) {
-        if (subjects.size() == 0) {
+    public void setData(List<Power> objects) {
+        if (objects.size() == 0) {
             emptyView.setVisibility(View.VISIBLE);
-            emptyText.setText("还没有任何用户");
+            emptyText.setText("还没有任何客体");
         } else {
             emptyView.setVisibility(View.GONE);
-            adapter.addAll(subjects);
+            adapter.addAll(objects);
         }
     }
 

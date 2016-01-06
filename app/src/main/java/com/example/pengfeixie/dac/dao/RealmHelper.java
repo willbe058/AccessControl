@@ -87,6 +87,7 @@ public class RealmHelper {
                     right.setName("o");
                     break;
             }
+            right.setHas(true);
             realm.copyToRealm(right);
             rights.add(right);
         }
@@ -132,6 +133,13 @@ public class RealmHelper {
         return realm.where(CentralizedObject.class).equalTo("creator.name", subjectName).findAll();
     }
 
-    
+    public List<Power> getPowers(String subjectName) {
+        return realm.where(Power.class).equalTo("sName", subjectName).findAll();
+    }
+
+    public CentralizedObject getObject(String objName) {
+        return realm.where(CentralizedObject.class).equalTo("name", objName).findFirst();
+    }
+
 
 }

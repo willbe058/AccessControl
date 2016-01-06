@@ -11,6 +11,16 @@ public class Right extends RealmObject {
     @PrimaryKey
     private String name;
 
+    private boolean has;
+
+    public boolean isHas() {
+        return has;
+    }
+
+    public void setHas(boolean has) {
+        this.has = has;
+    }
+
     public String getName() {
         return name;
     }
