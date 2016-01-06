@@ -10,6 +10,8 @@ import io.realm.annotations.PrimaryKey;
 public class Power extends RealmObject {
 
     @PrimaryKey
+    private String id;
+
     private String sName;
 
     private String oName;
@@ -17,6 +19,14 @@ public class Power extends RealmObject {
     private RealmList<Right> rights;
 
     private CentralizedSubject grantor;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getsName() {
         return sName;

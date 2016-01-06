@@ -43,6 +43,8 @@ public class RealmHelper {
 
     private RealmList<Right> rights;
 
+    private boolean[] has;
+
     public Realm getRealm() {
         return realm;
     }
@@ -53,15 +55,11 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
-    public void addObject(CentralizedObject object, CentralizedSubject subject, Power power) {
+    public void addObject(CentralizedObject object, Power power) {
         realm.beginTransaction();
-        CentralizedObject mObject = realm.copyToRealm(object);
-        mObject.setCreator(subject);
+        realm.copyToRealm(object);
         Power mPower = realm.copyToRealm(power);
-        mPower.setsName(subject.getName());
         mPower.setoName(object.getName());
-        mPower.setGrantor(subject);
-        RealmList<Right> rights = new RealmList<>();
         for (int i = 0; i < 7; i++) {
             Right right = new Right();
             switch (i) {
@@ -88,9 +86,10 @@ public class RealmHelper {
                     break;
             }
             right.setHas(true);
-            realm.copyToRealm(right);
-            rights.add(right);
+//            realm.copyToRealmOrUpdate(right);
+            mPower.getRights().add(right);
         }
+        realm.copyToRealmOrUpdate(mPower);
         realm.commitTransaction();
     }
 
@@ -104,13 +103,41 @@ public class RealmHelper {
         return this;
     }
 
-    public RealmHelper rights(RealmList<Right> rights) {
+    public RealmHelper rights(RealmList<Right> rights, boolean[] has) {
         this.rights = rights;
+        this.has = has;
         return this;
     }
 
     public void to(CentralizedSubject subject) {
         this.toSubject = subject;
+        for (int i = 0; i < 7; i++) {
+            Right right = new Right();
+            switch (i) {
+                case 0:
+                    right.setName("c");
+                    break;
+                case 1:
+                    right.setName("r");
+                    break;
+                case 2:
+                    right.setName("w");
+                    break;
+                case 3:
+                    right.setName("d");
+                    break;
+                case 4:
+                    right.setName("a");
+                    break;
+                case 5:
+                    right.setName("e");
+                    break;
+                case 6:
+                    right.setName("o");
+                    break;
+            }
+            right.setHas(has[i]);
+        }
         Power power = new Power();
         power.setsName(toSubject.getName());
         power.setoName(object.getName());

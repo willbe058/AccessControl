@@ -2,6 +2,7 @@ package com.example.pengfeixie.dac.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import com.example.pengfeixie.dac.R;
 import com.example.pengfeixie.dac.base.BaseRecyclerViewMvpFragment;
 import com.example.pengfeixie.dac.dao.RealmHelper;
 import com.example.pengfeixie.dac.event.BusProvider;
+import com.example.pengfeixie.dac.event.CreateObjectEvent;
 import com.example.pengfeixie.dac.model.CentralizedObject;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
 import com.example.pengfeixie.dac.model.Power;
@@ -22,6 +24,7 @@ import com.example.pengfeixie.dac.presenter.ObjectPresenter;
 import com.example.pengfeixie.dac.ui.adapter.SelfObjectAdapter;
 import com.example.pengfeixie.dac.utils.PreferenceUtil;
 import com.example.pengfeixie.dac.view.ObjectView;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -61,6 +64,18 @@ public class ObjectFragment extends BaseRecyclerViewMvpFragment<ObjectView, Obje
     public void onDestroy() {
         super.onDestroy();
         BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onCreateObjectEvent(CreateObjectEvent event) {
+        adapter.clear();
+        presenter.loadData();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.loadData();
     }
 
     @Override
