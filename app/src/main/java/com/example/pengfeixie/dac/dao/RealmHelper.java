@@ -180,4 +180,7 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
+//    public List<CentralizedObject> getControledObjects(String name) {
+//        this.getOwnedObjects(name)
+//    }
 }

@@ -132,6 +132,7 @@ public class ObjectFragment extends BaseRecyclerViewMvpFragment<ObjectView, Obje
                                             RealmHelper.getInstance().deleteObject(objName);
                                             BusProvider.getInstance().post(new DeleteObjectEvent());
                                             Toast.makeText(dialog.getContext(), "删除成功", Toast.LENGTH_LONG).show();
+                                            dialog.dismiss();
                                         } else {
                                             Toast.makeText(dialog.getContext(), "对不起,您没有删除的权限", Toast.LENGTH_LONG).show();
                                         }
