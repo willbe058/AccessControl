@@ -133,6 +133,13 @@ public class MainActivity extends BaseAppBarActivity {
                 startActivity(new Intent(MainActivity.this, SelfObjectActivity.class));
             }
         });
+
+        addPower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, GrantActivity.class));
+            }
+        });
     }
 
     public void exportDatabase() {

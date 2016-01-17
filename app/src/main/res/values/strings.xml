@@ -13,4 +13,13 @@
         <item>删除</item>
         <item>执行</item>
     </string-array>
+    <string-array name="grant">
+        <item>控制</item>
+        <item>读</item>
+        <item>写</item>
+        <item>添加</item>
+        <item>删除</item>
+        <item>执行</item>
+        <item>拥有</item>
+    </string-array>
 </resources>

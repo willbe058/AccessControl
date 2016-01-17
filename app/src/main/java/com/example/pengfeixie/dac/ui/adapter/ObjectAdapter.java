@@ -15,6 +15,7 @@ import de.codecrafters.tableview.TableDataAdapter;
  * Created by pengfeixie on 16/1/6.
  */
 public class ObjectAdapter extends TableDataAdapter<Power> {
+
     private static final int TEXT_SIZE = 10;
 
     public ObjectAdapter(Context context, List<Power> data) {
