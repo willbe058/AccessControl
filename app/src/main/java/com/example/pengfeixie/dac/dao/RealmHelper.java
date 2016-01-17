@@ -70,6 +70,7 @@ public class RealmHelper {
         mPower.setoName(object.getName());
         for (int i = 0; i < 7; i++) {
             Right right = new Right();
+            right.setId(UUID.randomUUID().toString());
             switch (i) {
                 case 0:
                     right.setName("c");
@@ -133,7 +134,11 @@ public class RealmHelper {
             for (Power power : powers) {
                 for (Right right : power.getRights()) {
                     if (right.getName().equals("c")) {
-                        return true;
+                        if (right.isHas()) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 }
             }
@@ -146,6 +151,7 @@ public class RealmHelper {
     public void to(CentralizedSubject subject) {
         this.toSubject = subject;
         if (!hasControlRight(fromSubject, object)) {
+            Toast.makeText(AppData.getContext(), "您没有控制权,不能传递权限!", Toast.LENGTH_LONG).show();
             return;
         }
         RealmResults<Power> powers = getExistedPower();
@@ -155,6 +161,7 @@ public class RealmHelper {
             //exist
             power = powers.get(0);
             List<Right> tempRights = power.getRights();
+            realm.beginTransaction();
             for (int i = 0; i < 7; i++) {
                 switch (has[i]) {
                     case NO:
@@ -172,12 +179,14 @@ public class RealmHelper {
                         break;
                 }
             }
+            realm.commitTransaction();
 //            power.setRights(rights);
         } else {
             //dose not exist
             RealmList<Right> rights = new RealmList<>();
             for (int i = 0; i < 7; i++) {
                 Right right = new Right();
+                right.setId(UUID.randomUUID().toString());
                 switch (i) {
                     case 0:
                         right.setName("c");
@@ -223,6 +232,10 @@ public class RealmHelper {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(power);
         realm.commitTransaction();
+    }
+
+    public void revoke() {
+
     }
 
     public CentralizedSubject getUser(String name) {

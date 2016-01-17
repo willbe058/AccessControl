@@ -9,9 +9,19 @@ import io.realm.annotations.PrimaryKey;
 public class Right extends RealmObject {
 
     @PrimaryKey
+    private String id;
+
     private String name;
 
     private boolean has;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public boolean isHas() {
         return has;
