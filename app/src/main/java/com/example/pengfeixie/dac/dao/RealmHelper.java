@@ -2,6 +2,7 @@ package com.example.pengfeixie.dac.dao;
 
 import android.widget.Toast;
 
+import com.example.pengfeixie.dac.model.BlackToken;
 import com.example.pengfeixie.dac.model.CentralizedObject;
 import com.example.pengfeixie.dac.model.CentralizedSubject;
 import com.example.pengfeixie.dac.model.Power;
@@ -234,8 +235,42 @@ public class RealmHelper {
         realm.commitTransaction();
     }
 
-    public void revoke() {
+    public void revoke(CentralizedSubject subject, CentralizedObject object, CentralizedSubject grantor) {
+        RealmResults<Power> powers = realm.where(Power.class)
+                .equalTo("sName", subject.getName())
+                .equalTo("oName", object.getName())
+                .equalTo("grantor.name", grantor.getName())
+                .findAll();
+        if (powers.size() != 0) {
+            realm.beginTransaction();
+            powers.remove(0);
 
+            CentralizedSubject tempGrantor = subject;
+            while (transfer(tempGrantor, object).size() != 0) {
+                RealmResults<Power> tempPower = transfer(tempGrantor, object);
+                tempGrantor = getUser(tempPower.get(0).getsName());
+                tempPower.remove(0);
+            }
+            realm.commitTransaction();
+        }
+    }
+
+    public void blockSubject(CentralizedSubject subject, CentralizedObject object, CentralizedSubject owner) {
+        BlackToken blackToken = new BlackToken();
+        realm.beginTransaction();
+        blackToken.setId(UUID.randomUUID().toString());
+        blackToken.setObject(object);
+        blackToken.setOwner(owner);
+        subject.getBlackTokens().add(blackToken);
+        realm.copyToRealmOrUpdate(subject);
+        realm.commitTransaction();
+    }
+
+    public RealmResults<Power> transfer(CentralizedSubject grantor, CentralizedObject object) {
+        return realm.where(Power.class)
+                .equalTo("oName", object.getName())
+                .equalTo("grantor.name", grantor.getName())
+                .findAll();
     }
 
     public CentralizedSubject getUser(String name) {
@@ -252,6 +287,10 @@ public class RealmHelper {
 
     public List<Power> getPowers(String subjectName) {
         return realm.where(Power.class).equalTo("sName", subjectName).findAll();
+    }
+
+    public List<Power> getTransferedPowers(String grantorName) {
+        return realm.where(Power.class).equalTo("grantor.name", grantorName).notEqualTo("sName", grantorName).findAll();
     }
 
     public CentralizedObject getObject(String objName) {

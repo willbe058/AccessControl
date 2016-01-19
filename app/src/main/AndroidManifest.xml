@@ -41,6 +41,10 @@
             android:name=".ui.activity.GrantActivity"
             android:parentActivityName=".ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.activity.RevokeActivity"
+            android:parentActivityName=".ui.activity.GrantActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

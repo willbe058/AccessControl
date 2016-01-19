@@ -1,5 +1,6 @@
 package com.example.pengfeixie.dac.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -175,7 +176,7 @@ public class GrantActivity extends BaseAppBarActivity {
         revokeFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(GrantActivity.this, RevokeActivity.class));
             }
         });
     }

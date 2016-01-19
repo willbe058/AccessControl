@@ -1,5 +1,6 @@
 package com.example.pengfeixie.dac.model;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -15,6 +16,15 @@ public class CentralizedSubject extends RealmObject implements Grantor {
 
     private String info;
 
+    private RealmList<BlackToken> blackTokens;
+
+    public RealmList<BlackToken> getBlackTokens() {
+        return blackTokens;
+    }
+
+    public void setBlackTokens(RealmList<BlackToken> blackTokens) {
+        this.blackTokens = blackTokens;
+    }
 
     public String getName() {
         return name;
